@@ -4,21 +4,133 @@
     <meta charset="utf-8">
     <title>Lukas Steiblys | imbusy</title>
     <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Public Sans', sans-serif;
+      }
+      .header {
+        margin: 60px 20px;
+        text-align: center;
+        width: calc(100% - 40px);
+        }
+        .header-name {
+          font-size: 40px;
+        }
+        .header-bio {
+          color: #555;
+        }
+        .header-description {
+          max-width: 800px;
+          margin: 20px auto 10px auto;
+          text-align: justify;
+          font-size: 20px;
+        }
+        .main {
+          max-width: 800px;
+          margin: 20px auto;
+        }
+        .article-date {
+          position: relative;
+        }
+          .article-date-strikethrough {
+            width: 100%;
+            position: absolute;
+            top: 12px;
+            z-index: -1;
+            border-top: 3px solid #777;
+          }
+          .article-date-value {
+            position: relative;
+            background-color: white;
+            font-size: 20px;
+            padding: 0 10px;
+            display: inline;
+            z-index: 0;
+            left: 20px;
+          }
+        .article-technologies {
+          color: #777;
+        }
+        .article-images > a {
+          border: 4px solid white;
+          display: inline-block;
+        }
+        .article-images > a:hover {
+          border: 4px solid #777;
+        }
     </style>
+    <link href="https://fonts.googleapis.com/css?family=Public+Sans&display=swap" rel="stylesheet">
   </head>
   <body>
     <div class="header">
       <div class="header-name">Lukas Steiblys</div>
       <div class="header-bio">Software engineer, hobby mathematician and musician.</div>
       <div class="header-description">
-        <p>This page is a description of my more notable personal projects. The page has gone
-           through many iterations since 2004 and the projects have obviously grown in complexity
-           and sophistication.</div>
+        <p>This page is a description of my more notable personal projects and events ordered
+           reverse chronologically. The page has gone through many iterations since 2004 and the
+           projects have obviously grown in complexity and sophistication.</p>
         <p>Currently I am available for remote contract work as I travel across the
            United States. If you want to follow my journey, see
            <a href="https://www.lukas.travel">www.lukas.travel</a>. If you have a project in mind,
            do not hesitate to contact me at imbusy _ imbusy.org (you know what _ stands for).</p>
       </div>
+    </div>
+    <div class="main">
+      <article>
+        <div class="article-date">
+          <div class="article-date-strikethrough"></div>
+          <div class="article-date-value">2019-08-23</div>
+        </div>
+        <div class="article-content">
+          <p>I have left on a tour of the United States in my travel trailer. You can follow my
+             journey on <a href="https://www.lukas.travel">www.lukas.travel</a>. The content for
+             the blog is created by me and my wife and mostly there is no distinction.</p>
+          <p>I have left my full time position at the Voleon hedge fund as a software engineer and
+             now I am available for remote hire. I have noticed that I am significantly more
+             productive working fewer hours per day and as a contractor I am always motivated to do
+             my best work for the client.</p>
+        </div>
+      </article>
+      <article>
+        <div class="article-date">
+          <div class="article-date-strikethrough"></div>
+          <div class="article-date-value">2017-07-17</div>
+        </div>
+        <div class="article-content">
+          <p>I built a web application called mailguard.io that provided users with an email
+             address for specifically receiving and storing receipts. This email address could then
+             be used at retail or online stores instead of revealing your personal address.</p>
+          <p>The service filtered all other marketing emails and spam out and left only receipts
+             so you could quickly access them from one place. However, there were a few problems
+             with this idea:
+             <ul>
+               <li>Often the online shops then use your email address for automatic account                                 creation and password recovery. Do we filter the password recovery emails or
+                   keep them?</li>
+               <li>There were few opportunities for organic growth in usage of the service. After
+                   the initial registration spike of my friends, neither registration, nor usage
+                   actually picked up.</li>
+             </ul>After running the service for six weeks, I decided to shut it down.
+          </p>
+          <p>On the other hand, I was happy that I had an opportunity to try out the Google Cloud
+             Platform for the first time and play with some cool technologies. Screenshots of the
+             web interface are below.
+          </p>
+          <p class="article-technologies">Technologies used: Google Cloud, App Engine, Python,
+             Web Components</p>
+          <div class="article-images">
+            <a href="images/work/mailguard-1.png">
+              <img src="images/work/mailguard-1_thumb.png" width="223" height="200">
+            </a>
+            <a href="images/work/mailguard-2.png">
+              <img src="images/work/mailguard-2_thumb.png" width="223" height="200">
+            </a>
+            <a href="images/work/mailguard-3.png">
+              <img src="images/work/mailguard-3_thumb.png" width="223" height="200">
+            </a>
+          </div>
+        </div>
+      </article>
     </div>
   </body>
 </html>
