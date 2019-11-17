@@ -6,22 +6,24 @@
     <style>
       html, body {
         margin: 0;
-        padding: 0;
+        padding: 10px;
         font-family: 'Public Sans', sans-serif;
       }
       .header {
-        margin: 60px 20px;
+        margin: 60px auto;
         text-align: center;
-        width: calc(100% - 40px);
+        max-width: 800px;
         }
         .header-name {
           font-size: 40px;
+        }
+        .header-linkedin {
+          float: right;
         }
         .header-bio {
           color: #555;
         }
         .header-description {
-          max-width: 800px;
           margin: 20px auto 10px auto;
           text-align: justify;
           font-size: 20px;
@@ -29,6 +31,9 @@
         .main {
           max-width: 800px;
           margin: 20px auto;
+        }
+        article {
+          margin: 0 0 40px 0;
         }
         .article-date {
           position: relative;
@@ -65,6 +70,8 @@
   <body>
     <div class="header">
       <div class="header-name">Lukas Steiblys</div>
+      <div class="header-linkedin">
+        <a href="https://www.linkedin.com/in/lukas-steiblys-4583561a">LinkedIn</a></div>
       <div class="header-bio">Software engineer, hobby mathematician and musician.</div>
       <div class="header-description">
         <p>This page is a description of my more notable personal projects and events ordered
@@ -80,7 +87,7 @@
       <article>
         <div class="article-date">
           <div class="article-date-strikethrough"></div>
-          <div class="article-date-value">2019-08-23</div>
+          <div class="article-date-value">2019, August</div>
         </div>
         <div class="article-content">
           <p>I have left on a tour of the United States in my travel trailer. You can follow my
@@ -95,7 +102,7 @@
       <article>
         <div class="article-date">
           <div class="article-date-strikethrough"></div>
-          <div class="article-date-value">2017-07-17</div>
+          <div class="article-date-value">2017, July</div>
         </div>
         <div class="article-content">
           <p>I built a web application called mailguard.io that provided users with an email
@@ -129,6 +136,52 @@
               <img src="images/work/mailguard-3_thumb.png" width="223" height="200">
             </a>
           </div>
+        </div>
+      </article>
+      <article>
+        <div class="article-date">
+          <div class="article-date-strikethrough"></div>
+          <div class="article-date-value">2016, March</div>
+        </div>
+        <div class="article-content">
+          <p>At one point, I was living in a San Francisco studio and I did not have enough space
+             for a desktop monitor on my table. However, I needed more computing power than my
+             laptop could provide so I decided to buy a desktop computer, hide it somewhere and
+             connect to it remotely through the home network.</p>
+          <p>It was not easy to find the right solution for remote desktop streaming so I wrote
+             a survey article of all the solutions I had tried myself. The article is on
+             medium.com:
+             <a href="https://medium.com/@imbusy/remote-desktop-solutions-at-home-for-space-constrained-4f9be76f0b21">Remote Desktop Solutions for Your Home</a></p>
+        </div>
+      </article>
+      <article>
+        <div class="article-date">
+          <div class="article-date-strikethrough"></div>
+          <div class="article-date-value">2014, September</div>
+        </div>
+        <div class="article-content">
+          <p>As my Uber for [x] idea in 2014, I built a package delivery service.</p>
+          <p>The idea was to tap into the Eastern Europe to UK package delivery market. There are
+             a lot of packages moving west in unofficial looking vans together with people
+             travelling to and from the UK on a budget. I wanted to make the search for a delivery
+             company and actual pick-up coordination easier.</p>
+          <p>I spent a couple of months building a web application that fit the consumers who have
+             packages and package delivery companies providing the service. I scraped local
+             classified ads and built up a reasonable list of companies and their delivery
+             locations. I had a fully working product.</p>
+          <p>The front page was a form that asked for your package information, such as
+             the dimensions, and the destination address. The application could then search a
+             geographical database based on the destination for companies that can deliver. On
+             the package delivery company side, there was a profile where you could enter details
+             about yourself and draw polygons of delivery locations.</p>
+          <p>It seemed to work and we did end up matching some customers with drivers and packages
+             were delivered. However, there was still some human coordination and it was difficult
+             to find reliable drivers. One idea was to build stronger partnerships with a filtered
+             set of drivers. I did not have enough resources at the time to pursue the
+             project further and I was living on the other side of the world so this project had to
+             end.</p>
+          <p class="article-technologies">Technologies used: Linux VPN, MongoDB with geographical
+             search, Python, jQuery.</p>
         </div>
       </article>
     </div>
