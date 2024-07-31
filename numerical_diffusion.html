@@ -1,0 +1,106 @@
+<h1>Numerical Diffusion</h1>
+
+<p>Why am I writing this?</p>
+
+<p>I tried to write a very simple simulation of a basic physical concept and
+ran into an intriguing result. The journey took me through general programming,
+numerical analysis, fluid mechanics, differential equations and visualization
+of the results. The information I present here is not new, but it is scatered
+among many sources and I will try to present a unified view, and hopefully
+inspire you as much as it inspired me.</p>
+
+<p>I will try to explain, how computer simulations of fluids, and potentially
+many other phenomena, physical or not, can develop diffusive properties, that
+are not actually seen in the real world that the simulation is trying to
+represent. It is an artifact of how we choose to represent reality and
+continuous  equations in a machine that performs discrete operations.</p>
+
+<p>By diffusion here I mean a slow spread of a concentrated quantity into its
+suroundings with the passage of time. What the quantity actually represents
+is not that important - it could be a dye in a tank of water, heat in a room,
+or something else.</p>
+
+<p>How to read this?</p>
+
+<p>Read it sequentially until you feel like there is too much information and then
+skip over to the <strong>Experiments</strong> section.</p>
+
+<h2>Computations On A Grid</h2>
+
+<p>There are two main ways of looking at fluids - either the microscopic view as
+a bunch of individual particles, or the macroscopic view of vector and scalar
+fields. The fields in fluid equations normally represent velocity, and pressure
+at each point in space that the fluid occupies.</p>
+
+<p>In fluid simulations it is typical to use the macroscopic view of the fields,
+because we can use a uniformly subdivided finite grid for their discretization.</p>
+
+<p>In our example, we will assume we live in a 1-dimensional reality (a line) and
+discretize our grid as a simple array of floating point numbers. We will
+actually use two grids - one will represent the quantity we are advecting, and
+the second one will represent the velocity of the fluid. Positive values in
+the velocity field represent movement to the right, and negative values
+represent movement to the left.</p>
+
+<h2>Advection</h2>
+
+<p>It is the transport of a quantity through a medium by the motion of the medium
+itself. That medium is called a fluid (gas or liquid).</p>
+
+<p>Think of a ball drifting in a lake and how it is transported by the motion of
+the water in the lake. It is being advected by the water, and the speed of the
+ball is controled by the velocity of the water. Or at the microscopic level -
+the momentum of the individual water particles bumping against the surface of
+the ball.</p>
+
+<h2>Differential Equations</h2>
+
+<p>We will deal with 1-D advection equation.</p>
+
+<p>$$df/dt + u * df/dx = 0$$</p>
+
+<p><code>f</code> represents the quantity we are advecting (our dye in the water, or heat
+in the room).</p>
+
+<p>For positive values of <code>u</code>, this represents movement of <code>f</code> with the passage
+of time to the right, and negative values of <code>u</code> represents movement to the left.</p>
+
+<p>One way of seeing this is to assume <code>u</code> is constant, take any function <code>f(z)</code>
+and use variable substitution <code>z = x - u * t</code>. <code>z</code> is essentially just constantly
+decreasing at the speed of <code>u</code> from whatever initial value <code>x</code> had. The values of
+<code>f(z)</code> are being taken from further away on the left as time passes. This gives
+the illusion that the whole function <code>f</code> is moving to the right.</p>
+
+<p>Plugging it into the differential equation, we get.</p>
+
+<p>$$
+df(z) / dt + u * d(z) / dx = (df(z) / dz) * (dz / dt) + u * (df(z) / dz) * (dz / dx) =
+df(z) / dz * (x - u * t) / dt + u * df(z) /dz * (x - u * t) / dx =
+df(z) / dz * (-u) + u * df(z) / dz = 0
+$$</p>
+
+<p>We assumed <code>u</code> is constant, but it might not be. In that case, some of the
+values are shifting to the right, some are shifting to the left and it all
+depends on the velocity field <code>u</code>. This potentially leads to the development of
+large crests that are called discontinuities, or shock waves.</p>
+
+<h2>Upwind Scheme</h2>
+
+<h2>Modified Wave Number Analysis</h2>
+
+<p>Any function <code>f(x)</code> can be expressed as a Fourier series.</p>
+
+<h2>Experiments</h2>
+
+<h2>Conclusion</h2>
+
+<p>Philosophically, I like to think that the results show that the future is
+fuzzier the further you want to look. Eventually it's just a blur and
+completely unpredictable.</p>
+
+<h2>References</h2>
+
+<ol>
+<li><a href="https://en.wikipedia.org/wiki/Numerical_diffusion">"Numerical Diffusion" on Wikipedia</a></li>
+<li><a href="https://www.nas.nasa.gov/assets/nas/pdf/ams/2018/introtocfd/Intro2CFD_Lecture2_Lecture3_Pulliam_Chap3_Modk.pdf">"Modifed Wave Number Analysis"</a> - T. H. Pulliam / NASA Ames</li>
+</ol>
