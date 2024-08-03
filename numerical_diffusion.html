@@ -1,29 +1,29 @@
 <h1>Numerical Diffusion</h1>
 
-<p>Why am I writing this?</p>
-
-<p>I tried to write a very simple simulation of a basic physical concept and
-ran into an intriguing result. The journey took me through general programming,
-numerical analysis, fluid mechanics, differential equations and visualization
-of the results. The information I present here is not new, but it is scatered
-among many sources and I will try to present a unified view, and hopefully
-inspire you as much as it inspired me.</p>
-
 <p>I will try to explain, how computer simulations of fluids, and potentially
 many other phenomena, physical or not, can develop diffusive properties, that
 are not actually seen in the real world that the simulation is trying to
 represent. It is an artifact of how we choose to represent reality and
 continuous  equations in a machine that performs discrete operations.</p>
 
-<p>By diffusion here I mean a slow spread of a concentrated quantity into its
-suroundings with the passage of time. What the quantity actually represents
-is not that important - it could be a dye in a tank of water, heat in a room,
-or something else.</p>
+<p>Why am I writing this?</p>
+
+<p>I tried to write a very simple simulation of basic advection in fluids and
+ran into an intriguing result. The journey took me through general programming,
+numerical analysis, fluid mechanics, differential equations and visualization
+of the results. The information I present here is not new, but it is scatered
+among many sources and I will try to present a unified view, and hopefully
+inspire you as much as it inspired me.</p>
+
+<p>By <em>diffusion</em> in <em>numerical diffusion</em> I mean a slow spread of a concentrated
+quantity into its suroundings with the passage of time. What the quantity
+actually represents is not that important - it could be a dye in a tank of
+water, heat in a room, or something else.</p>
 
 <p>How to read this?</p>
 
 <p>Read it sequentially until you feel like there is too much information and then
-skip over to the <strong>Experiments</strong> section.</p>
+skip over to the <strong>Experiment</strong> section for a practical exercise.</p>
 
 <h2>Computations On A Grid</h2>
 
@@ -32,44 +32,48 @@ a bunch of individual particles, or the macroscopic view of vector and scalar
 fields. The fields in fluid equations normally represent velocity, and pressure
 at each point in space that the fluid occupies.</p>
 
-<p>In fluid simulations it is typical to use the macroscopic view of the fields,
-because we can use a uniformly subdivided finite grid for their discretization.</p>
+<p>In fluid simulations on computers it is typical to use the macroscopic view of
+the fields, and use a uniformly subdivided finite grid for the discretization.
+Basically an N-dimensional array.</p>
 
 <p>In our example, we will assume we live in a 1-dimensional reality (a line) and
 discretize our grid as a simple array of floating point numbers. We will
-actually use two grids - one will represent the quantity we are advecting, and
-the second one will represent the velocity of the fluid. Positive values in
-the velocity field represent movement to the right, and negative values
+actually use two grids - one will represent the quantity we are advecting
+(for example, concentration of a dye at each point in space), and the second
+one will represent the velocity of the fluid at the same points. Positive values
+in the velocity field represent movement to the right, and negative values
 represent movement to the left.</p>
 
 <h2>Advection</h2>
 
-<p>It is the transport of a quantity through a medium by the motion of the medium
-itself. That medium is called a fluid (gas or liquid).</p>
+<p>Advection is the transport of a quantity through a medium by the motion of the
+medium itself. That medium is called a fluid (gas or liquid).</p>
 
 <p>Think of a ball drifting in a lake and how it is transported by the motion of
 the water in the lake. It is being advected by the water, and the speed of the
-ball is controled by the velocity of the water. Or at the microscopic level -
-the momentum of the individual water particles bumping against the surface of
-the ball.</p>
+ball is controled by the velocity of the water at the point, where the ball is.
+Or at the microscopic level - the momentum of the individual water particles
+bumping against the surface of the ball.</p>
 
 <h2>Differential Equations</h2>
 
-<p>We will deal with 1-D advection equation.</p>
+<p>We will deal with 1-D advection equation, or alternatively called the
+<em>Burgers' equation</em> without the dissipative term.</p>
 
 <p>$$df/dt + u * df/dx = 0$$</p>
 
 <p><code>f</code> represents the quantity we are advecting (our dye in the water, or heat
-in the room).</p>
+in the room), and <code>u</code> is the velocity field.</p>
 
 <p>For positive values of <code>u</code>, this represents movement of <code>f</code> with the passage
 of time to the right, and negative values of <code>u</code> represents movement to the left.</p>
 
-<p>One way of seeing this is to assume <code>u</code> is constant, take any function <code>f(z)</code>
-and use variable substitution <code>z = x - u * t</code>. <code>z</code> is essentially just constantly
-decreasing at the speed of <code>u</code> from whatever initial value <code>x</code> had. The values of
-<code>f(z)</code> are being taken from further away on the left as time passes. This gives
-the illusion that the whole function <code>f</code> is moving to the right.</p>
+<p>One way of understanding the differential equation is to assume <code>u</code> is constant
+and positive, take any function <code>f(z)</code> and use variable substitution
+<code>z = x - u * t</code>. <code>z</code> is essentially just constantly decreasing at the speed of
+<code>u</code> from whatever initial value <code>x</code> had. The values of <code>f(z)</code> are being taken
+from further away on the left as time passes. This gives the illusion that the
+whole function <code>f</code> is moving to the right.</p>
 
 <p>Plugging it into the differential equation, we get.</p>
 
@@ -79,18 +83,154 @@ df(z) / dz * (x - u * t) / dt + u * df(z) /dz * (x - u * t) / dx =
 df(z) / dz * (-u) + u * df(z) / dz = 0
 $$</p>
 
+<p>It checks out - <strong>any</strong> function that just drifts to the right is a valid
+solution to the advection equation with constant positive field <code>u</code>.</p>
+
 <p>We assumed <code>u</code> is constant, but it might not be. In that case, some of the
-values are shifting to the right, some are shifting to the left and it all
-depends on the velocity field <code>u</code>. This potentially leads to the development of
-large crests that are called discontinuities, or shock waves.</p>
+quantities of <code>f(x)</code> are shifting to the right, some are shifting to the left
+and it all depends on the velocity field <code>u</code>. This potentially leads to the
+development of large crests that are called discontinuities, or shock waves.</p>
 
 <h2>Upwind Scheme</h2>
 
+<p>Analytical differential equations are nice, and you can find analytical
+continuous solutions for <code>f</code> that depend on time for a variety of idealized
+velocity fields <code>u</code>, but we want to discretize the fields <code>f</code> and <code>u</code> to a grid.
+This allows dealing with a lot wider variety of fields that are not
+mathematically ideal by approximating them as an array of values.</p>
+
+<p>To reframe the original advection equantion, we can say:</p>
+
+<p>$$df/dt = -u * df/dx$$</p>
+
+<p>This says that the change of <code>f</code> with time is equal to the velocity field
+<code>u</code> and the horizontal change in <code>f</code> itself at a fixed point in time.</p>
+
+<p>If we discretize time as well into $$\delta{t}$$ steps, we can say that:</p>
+
+<p>$$f<em>{t+\delta{t}} = f</em>{t} + (-u * df/dx) * \delta{t}$$</p>
+
+<p>So how do we find $$df/dx$$?</p>
+
+<p><strong>This is where the numerical diffusion kicks in.</strong></p>
+
+<p>The simplest option is to just look at the difference of nearby values of the
+discretized field <code>f</code>. The first-order upwind scheme just looks at the value
+to the left, or to the right, depending on which direction we are advecting in
+(the value of <code>u</code> at that point). If <code>u</code> is positive, and the "dye" is
+travelling to the right because of <code>u</code>, the left side is called the <em>upwind</em>
+side, and vice versa.</p>
+
+<p>The equations are then:</p>
+
+<p>$$df/dx<em>{i} = (f</em>{i} - f<em>{i-1})/\delta{x}$$ if $$u</em>i > 0$$
+$$df/dx<em>{i} = (f</em>{i+1} - f<em>{i})/\delta{x}$$ if $$u</em>i &lt; 0$$</p>
+
+<p>Or in compact form:</p>
+
+<p>$$
+u^{+}<em>i = max(0, u</em>i)
+u^{-}<em>i = min(0, u</em>i)
+df/dx<em>{i} = ((f</em>{i} - f<em>{i-1})/\delta{x}) * u^{+}</em>i + ((f<em>{i+1} - f</em>{i})\delta{x}) * u^{-}_i
+$$</p>
+
 <h2>Modified Wave Number Analysis</h2>
 
-<p>Any function <code>f(x)</code> can be expressed as a Fourier series.</p>
+<p>We would like to know, how good our approximation for <code>df/dx</code> is.
+<em>Modified Wave Number Analysis</em> an amazing method that can express, how
+accurate the discrete differentiation scheme is, and allows comparing different
+schemes. I will give a high-level overview of how it works, but for the details
+I advise looking at [2].</p>
 
-<h2>Experiments</h2>
+<p>Basically, any function <code>f(x)</code> can be expressed as a sum of <em>sine</em> and <em>cosine</em>
+functions of different frequencies. This decomposition is called the Fourier
+Series and you can use the Fourier Transform to figure out, how much of each
+frequency to combine to get the original <code>f(x)</code>, expressed in coefficients
+<code>c_k</code>. The integer <code>k</code> represents the frequency. The higher the value of
+<code>k</code>, the higher the frequency of the <em>sine</em> and <em>cosine</em> functions.</p>
+
+<p>The <em>Modified Wave Number Analysis</em> takes the analytical, perfect derivative
+of the Fourier Series of <code>f</code> and compares, how much our approximate difference
+scheme drifts from the idealized derivative <code>df(x)/dx</code> by looking at each
+coefficient <code>c_k</code> individually.</p>
+
+<p>An interesting result is that not all <code>c_k</code> drift equally - coefficients for
+higher frequencies (higher values of <code>k</code>) drift more. That means that features
+of <code>f(x)</code> that have big gradients will get more inaccurate than slowly changing
+features. And that is exactly what we will see in our experiment.</p>
+
+<h2>Experiment</h2>
+
+<p>Below is the full code for 1-D advection using the upwind scheme. You can play
+around with the quantity we are advecting, represented by <code>f</code>, and the velocity
+of advection at each grid point, represented by <code>u</code>. But the examples are just
+different frequencies of a pure sinusoid with <code>0</code> on the left boundary and <code>1</code>
+on the right boundary. The velocity is constant throughout the whole domain.</p>
+
+<pre><code>import math
+
+import matplotlib.pyplot as plt
+import numpy
+
+def advect(f, u, dt, dx):
+  """
+  First-order upwind scheme.
+
+  Arguments:
+    x - 1D scalar field to advect.
+    u - 1D velocity field.
+    dt - time delta.
+    dx - length of a single grid cell.
+  """
+  u_positive = numpy.minimum(u / dx, numpy.zeros(len(u)))
+  u_negative = numpy.maximum(u / dx, numpy.zeros(len(u)))
+
+  positive_diff = numpy.diff(f, append=1)
+  negative_diff = numpy.diff(f, prepend=0)
+
+  return f - dt * (u_positive * positive_diff + u_negative * negative_diff)
+
+length = 100 # m
+max_speed = 5 # m/s
+subdivision = 100 # unitless
+dt = 0.1 # s
+dx = length / subdivision # m
+iterations = 100
+frequency = 8
+
+f = numpy.array([math.sin(frequency * x / length) for x in range(subdivision + 1)])
+u = numpy.array([-max_speed] * (subdivision + 1))
+
+history = []
+for i in range(iterations):
+  history.append(numpy.array(f))
+  f = advect(f, u, dt, dx)
+
+plt.style.use('_mpl-gallery-nogrid')
+fig, ax = plt.subplots()
+ax.imshow(history)
+plt.show()
+</code></pre>
+
+<p>Here are the four plots for <code>frequency</code> values of <strong>8</strong>, <strong>40</strong> and <strong>120</strong>.</p>
+
+<p><img src="numerical_diffusion/advect8.png" alt="Advection for frequency 8" title="" />
+<img src="numerical_diffusion/advect40.png" alt="Advection for frequency 40" title="" />
+<img src="numerical_diffusion/advect120.png" alt="Advection for frequency 120" title="" /></p>
+
+<p>You can see that the lower the frequency, the less diffusion is happening, which
+is in line with the results of Modified Wave Number analysis. At <strong>8</strong> the
+diffusion is barely noticeable, but at <strong>120</strong> it's almost immediate.</p>
+
+<p>While theoretically for a uniform velocity field <code>u</code> we could build a more
+exact simulation by choosing the perfect value for <code>dx</code> and <code>dt</code> that would
+allow simulating by simply shifting the indexes, the upwind scheme allows us
+to plug in any velocity field <code>u</code>.</p>
+
+<p>Feel free to play around with fields <code>f</code> and <code>u</code> by initializing them to
+different values. The code depends only on <code>numpy</code> and <code>matplotlib</code> packages.
+If you plug in a non-constant field <code>u</code>, the solution should theoretically
+develop discontinuities, or shock waves. See [4] for some nice results.</p>
 
 <h2>Conclusion</h2>
 
@@ -103,4 +243,6 @@ completely unpredictable.</p>
 <ol>
 <li><a href="https://en.wikipedia.org/wiki/Numerical_diffusion">"Numerical Diffusion" on Wikipedia</a></li>
 <li><a href="https://www.nas.nasa.gov/assets/nas/pdf/ams/2018/introtocfd/Intro2CFD_Lecture2_Lecture3_Pulliam_Chap3_Modk.pdf">"Modifed Wave Number Analysis"</a> - T. H. Pulliam / NASA Ames</li>
+<li><a href="https://en.wikipedia.org/wiki/Upwind_scheme">"Upwind Scheme" on Wikipedia</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Burgers%27_equation">"Burger's Equation" on Wikipedia</a></li>
 </ol>
